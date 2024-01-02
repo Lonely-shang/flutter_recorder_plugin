@@ -1,3 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.jojo.flutter_recorder">
+          package="com.jojo.flutter_recorder">
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <application
+    android:requestLegacyExternalStorage="true"
+    android:usesCleartextTraffic="true"
+    >
+        <service
+                android:name="com.jojo.flutter_recorder.recoder.RecorderService"
+                android:enabled="true"
+                android:exported="true">
+        </service>
+    </application>
+
 </manifest>

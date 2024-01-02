@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_recorder/flutter_recorder.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(const MyApp());
@@ -54,8 +55,30 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: Column(
+          children: [
+            Center(
+              child: Text('Running on: $_platformVersion\n'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Permission.manageExternalStorage.request();
+              },
+              child: const Text('申请权限'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await _flutterRecorderPlugin.startRecord();
+              },
+              child: const Text('Start Record'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await _flutterRecorderPlugin.stopRecord();
+              },
+              child: const Text('Stop Record'),
+            ),
+          ],
         ),
       ),
     );

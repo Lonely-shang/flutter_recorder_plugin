@@ -26,4 +26,12 @@ abstract class FlutterRecorderPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<String?> stopRecord() {
+    throw UnimplementedError('startRecord() has not been implemented.');
+  }
+
+  Future<String?> startRecord() {
+    throw UnimplementedError('startRecord() has not been implemented.');
+  }
 }

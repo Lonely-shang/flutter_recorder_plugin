@@ -7,9 +7,14 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 class MockFlutterRecorderPlatform
     with MockPlatformInterfaceMixin
     implements FlutterRecorderPlatform {
-
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+
+  @override
+  Future<String?> stopRecord() => Future.value('42');
+
+  @override
+  Future<String?> startRecord() => Future.value('42');
 }
 
 void main() {

@@ -14,4 +14,16 @@ class MethodChannelFlutterRecorder extends FlutterRecorderPlatform {
     final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
+
+  @override
+  Future<String?> startRecord() async {
+    await methodChannel.invokeMethod<String>('startRecord');
+    return "";
+  }
+
+  @override
+  Future<String?> stopRecord() async {
+    await methodChannel.invokeMethod<String>('stopRecord');
+    return "";
+  }
 }
