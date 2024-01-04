@@ -4,7 +4,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.IBinder
+import androidx.core.content.ContextCompat.startForegroundService
 import com.jojo.flutter_recorder.recoder.RecorderService
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
@@ -18,6 +20,7 @@ class FlutterRecorderPlugin: FlutterPlugin, MethodCallHandler{
   private lateinit var channel : MethodChannel
   private lateinit var recorderService: RecorderService
   private lateinit var pluginBinding: FlutterPluginBinding
+  private lateinit var intent: Intent
   private val connection = object : ServiceConnection {
 
     override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -35,7 +38,7 @@ class FlutterRecorderPlugin: FlutterPlugin, MethodCallHandler{
     pluginBinding = flutterPluginBinding
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_recorder")
     channel.setMethodCallHandler(this)
-    var intent = Intent(pluginBinding.applicationContext, RecorderService::class.java).also { intent ->
+    intent = Intent(pluginBinding.applicationContext, RecorderService::class.java).also { intent ->
       pluginBinding.applicationContext.bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 //    flutterPluginBinding.applicationContext.startService(intent)
@@ -45,7 +48,9 @@ class FlutterRecorderPlugin: FlutterPlugin, MethodCallHandler{
     if (call.method == "getPlatformVersion") {
       result.success("Android ${android.os.Build.VERSION.RELEASE}")
     } else if (call.method == "startRecord"){
-       recorderService.startRecorder()
+//       recorderService.startRecorder()
+        startForegroundService(pluginBinding.applicationContext ,intent)
+
     }
     else if (call.method == "stopRecord") {
       recorderService.stopRecorder()
