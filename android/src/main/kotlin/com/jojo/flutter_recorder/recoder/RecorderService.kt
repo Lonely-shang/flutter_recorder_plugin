@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.media.MediaRecorder
 import android.os.*
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import java.io.File
 import java.io.IOException
@@ -33,6 +35,7 @@ class RecorderService : Service(), MediaRecorder.OnErrorListener {
 
     private var handler: Handler = @SuppressLint("HandlerLeak")
     object : Handler() {
+       @RequiresApi(Build.VERSION_CODES.N)
        @Override
          override fun handleMessage(msg: Message) {
               super.handleMessage(msg)
@@ -42,15 +45,12 @@ class RecorderService : Service(), MediaRecorder.OnErrorListener {
                   if (time > 1) {
                       db = 20 * Math.log10(time.toDouble())
                   }
-                  if (db < 0) {
-                      db = 0.0
-                      recorder.prepare()
-                  }
-                  notificationBuilder.setContentText("Recording in progress: ${db.toInt()} dB")
-                  notificationBuilder.setSmallIcon(1)
-                    val notificationManager =
-                        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                  notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+//
+//                  notificationBuilder.setContentText("Recording in progress: ${db.toInt()} dB")
+//                  notificationBuilder.setSmallIcon(1)
+//                    val notificationManager =
+//                        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//                  notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
                   println(db)
                   return
               }
@@ -65,21 +65,20 @@ class RecorderService : Service(), MediaRecorder.OnErrorListener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        startRecorder()
+//        startRecorder()
 
        return START_STICKY
     }
 
-    fun startRecorder(){
+    fun startRecorder(context: Context){
 
 
         recorder = MediaRecorder()
         isRecording = true
         recorder.reset()
         setRecorder()
-
         wakeLock.acquire()
-        createRecordingNotification()
+        createRecordingNotification(context)
         startForeground(NOTIFICATION_ID, recordingNotification)
 
     }
@@ -139,9 +138,8 @@ class RecorderService : Service(), MediaRecorder.OnErrorListener {
         fun getService(): RecorderService = this@RecorderService
     }
 
-    private fun createRecordingNotification() {
+    private fun createRecordingNotification(context: Context) {
         val notificationIntent = Intent(this, MediaRecorder::class.java)
-////        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
         val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         } else {
@@ -150,7 +148,7 @@ class RecorderService : Service(), MediaRecorder.OnErrorListener {
         notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("睿信")
             .setContentText("Recording in progress")
-            .setSmallIcon(1)
+            .setSmallIcon(context.applicationInfo.icon)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(false)
@@ -164,6 +162,8 @@ class RecorderService : Service(), MediaRecorder.OnErrorListener {
                 "Recording Channel",
                 NotificationManager.IMPORTANCE_HIGH
             )
+            channel.lightColor = Color.BLUE;
+            channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE;
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)

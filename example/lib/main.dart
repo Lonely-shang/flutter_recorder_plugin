@@ -62,7 +62,10 @@ class _MyAppState extends State<MyApp> {
             ),
             ElevatedButton(
               onPressed: () async {
-                Permission.manageExternalStorage.request();
+                await Permission.manageExternalStorage.request();
+                await Permission.notification.request();
+                await Permission.accessMediaLocation.request();
+                await Permission.microphone.request();
               },
               child: const Text('申请权限'),
             ),

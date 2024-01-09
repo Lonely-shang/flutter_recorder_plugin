@@ -48,8 +48,8 @@ class FlutterRecorderPlugin: FlutterPlugin, MethodCallHandler{
     if (call.method == "getPlatformVersion") {
       result.success("Android ${android.os.Build.VERSION.RELEASE}")
     } else if (call.method == "startRecord"){
-//       recorderService.startRecorder()
-        startForegroundService(pluginBinding.applicationContext ,intent)
+       recorderService.startRecorder(pluginBinding.applicationContext)
+//        startForegroundService(pluginBinding.applicationContext ,intent)
 
     }
     else if (call.method == "stopRecord") {
